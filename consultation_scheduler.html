@@ -2,278 +2,297 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>상담 예약 — 이정 교수</title>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Noto Sans KR', sans-serif; background: #f5f5f5; color: #1a1a1a; min-height: 100vh; }
-.app { max-width: 480px; margin: 0 auto; padding: 1rem; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Noto Sans KR', sans-serif; background: #f0f2f5; color: #1a1a1a; min-height: 100vh; }
+.app { max-width: 480px; margin: 0 auto; padding: 12px; }
 .screen { display: none; }
 .screen.active { display: block; }
-.card { background: #fff; border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
-.section-label { font-size: 13px; color: #888; margin-bottom: 8px; }
-input[type="text"], input[type="password"], input[type="date"], input[type="time"] {
-  width: 100%; height: 40px; border-radius: 8px; border: 1px solid #ddd;
-  background: #fafafa; color: #1a1a1a; font-size: 14px; padding: 0 12px;
-  outline: none; transition: border 0.15s;
+.card { background: #fff; border-radius: 14px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 6px rgba(0,0,0,0.07); }
+.label { font-size: 13px; color: #888; margin-bottom: 6px; display: block; font-weight: 500; }
+input[type="text"], input[type="password"] {
+  width: 100%; height: 44px; border-radius: 10px; border: 1.5px solid #e0e0e0;
+  background: #fafafa; color: #1a1a1a; font-size: 15px; padding: 0 14px; outline: none;
 }
 input:focus { border-color: #4A90E2; background: #fff; }
-button.primary { height: 40px; padding: 0 18px; border-radius: 8px; border: none; background: #4A90E2; color: #fff; font-size: 14px; cursor: pointer; white-space: nowrap; font-weight: 500; }
-button.primary:hover { background: #357ABD; }
-button.secondary { height: 40px; padding: 0 18px; border-radius: 8px; border: 1px solid #ddd; background: #fff; color: #333; font-size: 14px; cursor: pointer; }
-button.secondary:hover { background: #f5f5f5; }
-button.danger-sm { height: 28px; padding: 0 10px; border-radius: 6px; border: 1px solid #ffb3b3; background: transparent; color: #e53935; font-size: 12px; cursor: pointer; }
-button.ghost { height: 36px; padding: 0 12px; border-radius: 8px; border: none; background: transparent; color: #888; font-size: 13px; cursor: pointer; }
-button.ghost:hover { background: #f5f5f5; }
-.error-msg { font-size: 13px; color: #e53935; margin-top: 6px; display: none; }
-.loading-msg { font-size: 13px; color: #888; margin-top: 6px; text-align: center; padding: 1rem; display: none; }
-.spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid #ddd; border-top-color: #4A90E2; border-radius: 50%; animation: spin 0.6s linear infinite; vertical-align: middle; margin-right: 6px; }
+.btn { display: block; width: 100%; height: 48px; border-radius: 12px; border: none;
+  font-size: 16px; font-weight: 600; cursor: pointer; text-align: center; line-height: 48px; }
+.btn-primary { background: #4A90E2; color: #fff; }
+.btn-secondary { background: #fff; color: #333; border: 1.5px solid #ddd; }
+.btn-danger { background: #fff; color: #e53935; border: 1.5px solid #ffcdd2; font-size: 13px; height: 36px; line-height: 36px; border-radius: 8px; }
+.btn-sm { height: 34px; line-height: 34px; font-size: 13px; border-radius: 8px; padding: 0 14px; width: auto; display: inline-block; }
+.error { font-size: 13px; color: #e53935; margin-top: 6px; display: none; padding: 8px 12px; background: #fff8f8; border-radius: 8px; }
+.success-bar { font-size: 13px; color: #2e7d32; margin-top: 6px; display: none; padding: 8px 12px; background: #f1f8e9; border-radius: 8px; }
+.loading { text-align: center; padding: 20px; color: #888; font-size: 14px; display: none; }
+.spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid #ddd; border-top-color: #4A90E2; border-radius: 50%; animation: spin 0.6s linear infinite; vertical-align: middle; margin-right: 8px; }
 @keyframes spin { to { transform: rotate(360deg); } }
+
 /* 홈 */
-.home-wrap { max-width: 320px; margin: 3rem auto 0; }
-.home-header { text-align: center; margin-bottom: 2rem; }
-.home-header .univ { font-size: 13px; color: #888; margin-bottom: 6px; }
-.home-header h1 { font-size: 22px; font-weight: 600; color: #1a1a1a; margin-bottom: 4px; }
-.home-header .sub { font-size: 14px; color: #666; }
-.name-preview { margin-top: 8px; padding: 10px 14px; background: #e8f5e9; border-radius: 8px; font-size: 14px; color: #2e7d32; display: none; }
-/* 등록 */
-.register-wrap { max-width: 320px; margin: 3rem auto 0; }
-.register-wrap h2 { font-size: 18px; font-weight: 600; color: #1a1a1a; margin-bottom: 4px; }
-.register-wrap .sub { font-size: 13px; color: #666; margin-bottom: 1.5rem; }
-.field { margin-bottom: 14px; }
-.field label { font-size: 13px; color: #555; display: block; margin-bottom: 5px; font-weight: 500; }
+.home-wrap { padding: 40px 0 20px; }
+.home-logo { text-align: center; margin-bottom: 32px; }
+.home-logo .univ { font-size: 13px; color: #999; margin-bottom: 8px; }
+.home-logo h1 { font-size: 24px; font-weight: 700; color: #1a1a1a; margin-bottom: 4px; }
+.home-logo .sub { font-size: 14px; color: #666; }
+.preview-box { margin-top: 10px; padding: 10px 14px; border-radius: 10px; font-size: 14px; display: none; }
+.preview-ok { background: #e8f5e9; color: #2e7d32; }
+.preview-admin { background: #e3f2fd; color: #1565c0; }
+
 /* 상담 방식 */
-.mode-row { display: flex; gap: 10px; margin-bottom: 1rem; }
-.mode-btn { flex: 1; padding: 14px 8px; border-radius: 10px; border: 1.5px solid #ddd; background: #fff; cursor: pointer; text-align: center; transition: all 0.15s; }
-.mode-btn .mode-label { font-weight: 600; display: block; margin-bottom: 3px; font-size: 14px; color: #333; }
-.mode-btn .mode-sub { font-size: 11px; color: #999; display: block; }
-.mode-btn.recommended { border-color: #4A90E2; }
-.mode-btn.selected { background: #EBF4FF; border-color: #4A90E2; }
-.mode-btn.selected .mode-label { color: #4A90E2; }
-.mode-btn.selected .mode-sub { color: #4A90E2; }
-.recommend-badge { display: inline-block; font-size: 10px; background: #4A90E2; color: #fff; border-radius: 4px; padding: 1px 6px; margin-left: 4px; vertical-align: middle; font-weight: 500; }
-/* 슬롯 */
-.slot-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
-.slot { padding: 10px 12px; border-radius: 8px; border: 1px solid #ddd; font-size: 13px; cursor: pointer; background: #fff; color: #333; text-align: center; transition: all 0.15s; line-height: 1.6; }
-.slot:hover:not(.taken):not(.mine) { background: #EBF4FF; border-color: #4A90E2; color: #4A90E2; }
-.slot.taken { background: #f5f5f5; color: #bbb; cursor: not-allowed; text-decoration: line-through; }
-.slot.mine { background: #e8f5e9; border-color: #66bb6a; color: #2e7d32; }
-/* 확인 박스 */
-.confirm-box { background: #e8f5e9; border: 1px solid #a5d6a7; border-radius: 12px; padding: 1.25rem; margin-top: 1rem; display: none; }
-.confirm-box h3 { color: #2e7d32; font-size: 15px; font-weight: 600; margin-bottom: 10px; }
-.confirm-detail { font-size: 13px; color: #555; margin-bottom: 5px; }
-.confirm-detail strong { color: #1a1a1a; }
-.action-row { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
-button.kakao { height: 40px; padding: 0 16px; border-radius: 8px; border: none; background: #FEE500; color: #191919; font-size: 14px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+.mode-row { display: flex; gap: 10px; margin-bottom: 14px; }
+.mode-btn { flex: 1; padding: 14px 8px; border-radius: 12px; border: 1.5px solid #e0e0e0;
+  background: #fff; cursor: pointer; text-align: center; }
+.mode-btn.rec { border-color: #4A90E2; }
+.mode-btn.sel { background: #e8f1fc; border-color: #4A90E2; }
+.mode-btn .mt { font-size: 14px; font-weight: 600; color: #333; display: block; margin-bottom: 4px; }
+.mode-btn.sel .mt { color: #4A90E2; }
+.mode-btn .ms { font-size: 11px; color: #aaa; display: block; }
+.mode-btn.sel .ms { color: #4A90E2; }
+.rec-badge { display: inline-block; font-size: 10px; background: #4A90E2; color: #fff; border-radius: 4px; padding: 1px 5px; margin-left: 4px; }
+
+/* 슬롯 그리드 */
+.slot-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.slot { padding: 12px 10px; border-radius: 10px; border: 1.5px solid #e0e0e0;
+  font-size: 13px; cursor: pointer; background: #fff; color: #333; text-align: center; line-height: 1.6; }
+.slot:active { opacity: 0.7; }
+.slot.taken { background: #f5f5f5; color: #ccc; cursor: not-allowed; text-decoration: line-through; }
+.slot.mine { background: #e8f5e9; border-color: #81c784; color: #2e7d32; }
+.slot.avail:hover { background: #e8f1fc; border-color: #4A90E2; color: #4A90E2; }
+
+/* 예약 확인 */
+.confirm-card { background: #e8f5e9; border: 1.5px solid #a5d6a7; border-radius: 14px; padding: 16px; margin-top: 12px; display: none; }
+.confirm-card h3 { color: #2e7d32; font-size: 16px; font-weight: 700; margin-bottom: 12px; }
+.confirm-row { font-size: 13px; color: #555; margin-bottom: 6px; }
+.confirm-row strong { color: #1a1a1a; }
+.btn-kakao { display: flex; align-items: center; justify-content: center; gap: 8px;
+  background: #FEE500; color: #191919; border: none; border-radius: 10px;
+  height: 44px; font-size: 14px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 12px; }
+
 /* 교수 관리 */
-.tab-bar { display: flex; gap: 0; margin-bottom: 1.5rem; border-bottom: 2px solid #eee; }
-.tab { padding: 10px 20px; border: none; background: transparent; color: #888; font-size: 14px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; font-weight: 500; }
+.top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.top-bar h2 { font-size: 18px; font-weight: 700; }
+.tab-row { display: flex; border-bottom: 2px solid #eee; margin-bottom: 14px; }
+.tab { flex: 1; text-align: center; padding: 10px; font-size: 14px; font-weight: 600;
+  color: #aaa; border: none; background: transparent; cursor: pointer;
+  border-bottom: 2px solid transparent; margin-bottom: -2px; }
 .tab.active { color: #4A90E2; border-bottom-color: #4A90E2; }
 .tab-panel { display: none; }
 .tab-panel.active { display: block; }
-.stat-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 1rem; }
-.stat-card { background: #fff; border-radius: 10px; padding: 14px; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
-.stat-num { font-size: 24px; font-weight: 700; color: #1a1a1a; }
-.stat-label { font-size: 12px; color: #888; margin-top: 2px; }
-.add-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; }
-.add-row input[type="date"] { flex: 2; min-width: 130px; }
-.add-row input[type="time"] { flex: 1; min-width: 90px; }
-.hint { font-size: 12px; color: #aaa; margin-top: 6px; }
+
+/* 통계 */
+.stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+.stat-card { background: #fff; border-radius: 12px; padding: 14px 8px; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.stat-num { font-size: 26px; font-weight: 700; color: #1a1a1a; }
+.stat-label { font-size: 11px; color: #aaa; margin-top: 2px; }
+
+/* 슬롯 추가 — 선택 방식 */
+.date-select-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 10px; }
+.sel-btn { padding: 8px 4px; border-radius: 8px; border: 1.5px solid #e0e0e0;
+  background: #fff; font-size: 13px; color: #333; cursor: pointer; text-align: center; }
+.sel-btn.active { background: #e8f1fc; border-color: #4A90E2; color: #4A90E2; font-weight: 600; }
+.time-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 10px; }
+
 /* 달력 */
-.cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
-.cal-header h3 { font-size: 16px; font-weight: 600; color: #1a1a1a; }
-.cal-nav { height: 34px; width: 34px; border-radius: 8px; border: 1px solid #ddd; background: #fff; color: #333; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
-.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
-.cal-dow { text-align: center; font-size: 12px; color: #aaa; padding: 4px 0 8px; font-weight: 500; }
-.cal-cell { min-height: 70px; border-radius: 8px; border: 1px solid #eee; padding: 6px; background: #fff; }
-.cal-cell.other-month { background: #fafafa; border-color: transparent; }
-.cal-cell.has-slots { border-color: #4A90E2; cursor: pointer; }
-.cal-cell.has-slots:hover { background: #EBF4FF; }
-.cal-cell.selected { background: #EBF4FF; border-color: #4A90E2; }
-.cal-cell.today .day-num { background: #4A90E2; color: #fff; border-radius: 50%; }
-.day-num { font-size: 13px; font-weight: 600; color: #1a1a1a; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; margin-bottom: 4px; }
-.day-pip { font-size: 10px; padding: 2px 4px; border-radius: 4px; margin-bottom: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.day-pip.free { background: #e8f5e9; color: #2e7d32; }
-.day-pip.full { background: #fff3e0; color: #e65100; }
+.cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.cal-header h3 { font-size: 16px; font-weight: 700; }
+.cal-nav { width: 36px; height: 36px; border-radius: 8px; border: 1.5px solid #e0e0e0;
+  background: #fff; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+.cal-dow { text-align: center; font-size: 11px; color: #aaa; padding: 4px 0 8px; font-weight: 600; }
+.cal-cell { min-height: 64px; border-radius: 8px; border: 1px solid #f0f0f0; padding: 5px; background: #fff; }
+.cal-cell.other { background: #fafafa; border-color: transparent; }
+.cal-cell.has { border-color: #90caf9; cursor: pointer; }
+.cal-cell.has:active { background: #e8f1fc; }
+.cal-cell.sel { background: #e8f1fc; border-color: #4A90E2; }
+.cal-cell.today .dn { background: #4A90E2; color: #fff; border-radius: 50%; }
+.dn { font-size: 12px; font-weight: 700; width: 22px; height: 22px;
+  display: flex; align-items: center; justify-content: center; margin-bottom: 3px; color: #333; }
+.pip { font-size: 10px; padding: 1px 3px; border-radius: 3px; margin-bottom: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pip.free { background: #e8f5e9; color: #388e3c; }
+.pip.booked { background: #fff3e0; color: #e65100; }
+
+/* 상세 패널 */
 .detail-panel { display: none; }
 .detail-panel.open { display: block; }
-.list-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0f0f0; gap: 8px; }
-.list-row:last-child { border-bottom: none; }
+.detail-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 6px; }
+.detail-title { font-size: 14px; font-weight: 700; color: #333; }
+.detail-btns { display: flex; gap: 6px; }
+.slot-row { display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 0; border-bottom: 1px solid #f5f5f5; cursor: pointer; }
+.slot-row:last-child { border-bottom: none; }
+.slot-row:active { background: #fafafa; }
 .badge { display: inline-block; font-size: 11px; padding: 3px 8px; border-radius: 20px; font-weight: 500; }
-.badge.available { background: #e8f5e9; color: #2e7d32; }
+.badge.avail { background: #e8f5e9; color: #388e3c; }
 .badge.taken { background: #fff3e0; color: #e65100; }
-.badge.face { background: #EBF4FF; color: #4A90E2; }
+.badge.face { background: #e3f2fd; color: #1565c0; }
 .badge.phone { background: #f5f5f5; color: #666; }
-.top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
-.top-bar h2 { font-size: 17px; font-weight: 600; color: #1a1a1a; }
-.avatar { width: 34px; height: 34px; border-radius: 50%; background: #EBF4FF; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: #4A90E2; flex-shrink: 0; }
+
+/* 학생 목록 */
+.stu-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f5f5f5; gap: 8px; }
+.stu-row:last-child { border-bottom: none; }
+.avatar { width: 36px; height: 36px; border-radius: 50%; background: #e3f2fd; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #1565c0; flex-shrink: 0; }
 </style>
 </head>
 <body>
 <div class="app">
 
-  <!-- 홈 -->
-  <div id="screen-home" class="screen active">
-    <div class="home-wrap">
-      <div class="home-header">
-        <p class="univ">목포가톨릭대학교 간호학과</p>
-        <h1>교수 이정</h1>
-        <p class="sub">학생 상담 예약 시스템</p>
-      </div>
-      <div class="field">
-        <input type="text" id="login-id" placeholder="학번 (사번)" style="height:50px; font-size:16px;"
-          oninput="previewHome()" onkeydown="if(event.key==='Enter') enterSystem()" />
-        <div class="name-preview" id="home-preview"></div>
-        <p class="error-msg" id="home-error"></p>
-      </div>
-      <button class="primary" style="width:100%; height:50px; font-size:16px; margin-bottom:10px;" onclick="enterSystem()">
-        입장하기 →
-      </button>
-      <button class="secondary" style="width:100%; height:44px;" onclick="showScreen('screen-register')">
-        + 학번 등록
-      </button>
-      <div class="loading-msg" id="home-loading"><span class="spinner"></span> 처리 중...</div>
-    </div>
-  </div>
-
-  <!-- 학번 등록 -->
-  <div id="screen-register" class="screen">
-    <div class="register-wrap">
-      <h2>학번 등록</h2>
-      <p class="sub">학번과 이름을 입력하면 바로 예약할 수 있습니다</p>
-      <div class="field">
-        <label>학번</label>
-        <input type="text" id="reg-id" placeholder="예: 20240001" />
-      </div>
-      <div class="field">
-        <label>이름</label>
-        <input type="text" id="reg-name" placeholder="예: 김나영" />
-      </div>
-      <button class="primary" style="width:100%; margin-top:4px;" onclick="registerStudent()">등록하고 입장하기</button>
-      <p class="error-msg" id="reg-error"></p>
-      <div class="loading-msg" id="reg-loading"><span class="spinner"></span> 등록 중...</div>
-      <div style="text-align:center; margin-top:14px;">
-        <button class="ghost" onclick="showScreen('screen-home')">← 돌아가기</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 학생 예약 화면 -->
-  <div id="screen-student" class="screen">
-    <div class="top-bar">
-      <h2 id="student-greeting"></h2>
-      <button class="ghost" onclick="logout()">로그아웃</button>
+<!-- 홈 -->
+<div id="scr-home" class="screen active">
+  <div class="home-wrap">
+    <div class="home-logo">
+      <p class="univ">목포가톨릭대학교 간호학과</p>
+      <h1>교수 이정</h1>
+      <p class="sub">학생 상담 예약 시스템</p>
     </div>
     <div class="card">
-      <p class="section-label" style="margin-bottom:10px;">상담 방식을 선택하세요</p>
-      <div class="mode-row">
-        <button class="mode-btn recommended" id="mode-face" onclick="selectMode('face')">
-          <span class="mode-label">대면 <span class="recommend-badge">권장</span></span>
-          <span class="mode-sub">본관 206호 방문</span>
-        </button>
-        <button class="mode-btn" id="mode-phone" onclick="selectMode('phone')">
-          <span class="mode-label">📞 전화</span>
-          <span class="mode-sub">예약 시간에 전화 연결</span>
-        </button>
-      </div>
+      <span class="label">학번 또는 사번 입력</span>
+      <input type="text" id="login-id" placeholder="학번 입력 후 입장하기" oninput="previewHome()" onkeydown="if(event.key==='Enter')enterSystem()" />
+      <div class="preview-box" id="home-preview"></div>
+      <div class="error" id="home-err"></div>
     </div>
-    <div class="card">
-      <p class="section-label" style="margin-bottom:12px;">상담 가능한 시간을 선택하세요 <span style="font-size:12px;color:#aaa;">(1회 20분)</span></p>
-      <div class="loading-msg" id="slots-loading" style="display:block;"><span class="spinner"></span> 일정 불러오는 중...</div>
-      <div id="slot-grid" class="slot-grid"></div>
-    </div>
-    <div id="confirm-box" class="confirm-box">
-      <h3>✅ 예약이 완료되었습니다</h3>
-      <p class="confirm-detail">학생: <strong id="c-name"></strong></p>
-      <p class="confirm-detail">일시: <strong id="c-time"></strong></p>
-      <p class="confirm-detail">방식: <strong id="c-mode"></strong></p>
-      <p class="confirm-detail">장소: <strong id="c-place"></strong></p>
-      <div class="action-row">
-        <button class="kakao" onclick="copyConfirm()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C6.477 3 2 6.477 2 10.8c0 2.7 1.7 5.1 4.3 6.6l-1.1 4.1 4.8-3.2c.6.1 1.3.1 2 .1 5.523 0 10-3.477 10-7.8S17.523 3 12 3z"/></svg>
-          카카오톡으로 공유
-        </button>
-        <button class="danger-sm" onclick="cancelReservation()">예약 취소</button>
-      </div>
-    </div>
+    <button class="btn btn-primary" onclick="enterSystem()" style="margin-bottom:10px;">입장하기 →</button>
+    <button class="btn btn-secondary" onclick="showScr('scr-register')">+ 학번 등록</button>
+    <div class="loading" id="home-loading"><span class="spinner"></span>처리 중...</div>
   </div>
-
-  <!-- 교수 관리 화면 -->
-  <div id="screen-admin" class="screen">
-    <div class="top-bar">
-      <h2>교수 관리 화면</h2>
-      <button class="ghost" onclick="logout()">로그아웃</button>
-    </div>
-    <div class="tab-bar">
-      <button class="tab active" onclick="switchAdminTab('tab-schedule', this)">📅 상담 일정</button>
-      <button class="tab" onclick="switchAdminTab('tab-students', this)">👥 학생 목록</button>
-    </div>
-
-    <div id="tab-schedule" class="tab-panel active">
-      <div class="stat-row">
-        <div class="stat-card"><div class="stat-num" id="stat-total">-</div><div class="stat-label">전체 슬롯</div></div>
-        <div class="stat-card"><div class="stat-num" id="stat-booked">-</div><div class="stat-label">예약 완료</div></div>
-        <div class="stat-card"><div class="stat-num" id="stat-avail">-</div><div class="stat-label">잔여</div></div>
-      </div>
-      <div class="card">
-        <p class="section-label">상담 슬롯 추가 <span style="font-size:12px;color:#aaa;">(20분 단위 자동 생성)</span></p>
-        <div style="margin-bottom:10px;">
-          <label style="font-size:13px;color:#555;font-weight:500;display:block;margin-bottom:5px;">날짜</label>
-          <input type="date" id="new-date" style="width:100%;" />
-        </div>
-        <div style="display:flex;gap:8px;margin-bottom:10px;">
-          <div style="flex:1;">
-            <label style="font-size:13px;color:#555;font-weight:500;display:block;margin-bottom:5px;">시작</label>
-            <input type="time" id="new-start" style="width:100%;" />
-          </div>
-          <div style="flex:1;">
-            <label style="font-size:13px;color:#555;font-weight:500;display:block;margin-bottom:5px;">종료</label>
-            <input type="time" id="new-end" style="width:100%;" />
-          </div>
-        </div>
-        <button class="primary" style="width:100%;height:44px;font-size:15px;" onclick="addSlots()">슬롯 추가</button>
-        <p class="hint" style="margin-top:8px;">예: 날짜 선택 후 10:00 ~ 12:00 입력 → 6개 슬롯 자동 생성</p>
-      </div>
-      <div class="card">
-        <div class="cal-header">
-          <button class="cal-nav" onclick="changeMonth(-1)">‹</button>
-          <h3 id="cal-title"></h3>
-          <button class="cal-nav" onclick="changeMonth(1)">›</button>
-        </div>
-        <div class="cal-grid" id="cal-grid"></div>
-      </div>
-      <div class="detail-panel card" id="detail-panel">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-          <p class="section-label" id="detail-title" style="margin-bottom:0;"></p>
-          <div style="display:flex; gap:8px; align-items:center;">
-            <button class="ghost" style="font-size:12px;height:28px;padding:0 10px;" onclick="toggleSelectAll()">전체 선택</button>
-            <button class="danger-sm" id="bulk-delete-btn" style="display:none;" onclick="bulkDeleteSlots()">선택 삭제</button>
-            <button class="danger-sm" style="border-color:#ffb3b3;" onclick="deleteAllDaySlots()">이 날 전체 삭제</button>
-          </div>
-        </div>
-        <div id="detail-list"></div>
-      </div>
-    </div>
-
-    <div id="tab-students" class="tab-panel">
-      <div class="card">
-        <p class="section-label" style="margin-bottom:12px;">학생 직접 추가</p>
-        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-          <input type="text" id="admin-reg-id" placeholder="학번" style="flex:1; min-width:110px;" />
-          <input type="text" id="admin-reg-name" placeholder="이름" style="flex:1; min-width:80px;" />
-          <button class="primary" onclick="adminAddStudent()">추가</button>
-        </div>
-        <p class="error-msg" id="admin-reg-error"></p>
-      </div>
-      <div class="card">
-        <p class="section-label" style="margin-bottom:12px;">등록된 학생 <strong id="student-count"></strong></p>
-        <div class="loading-msg" id="students-loading"><span class="spinner"></span> 불러오는 중...</div>
-        <div id="student-list"></div>
-      </div>
-    </div>
-  </div>
-
 </div>
+
+<!-- 학번 등록 -->
+<div id="scr-register" class="screen">
+  <div style="padding-top:30px;">
+    <div class="card">
+      <h2 style="font-size:18px;font-weight:700;margin-bottom:4px;">학번 등록</h2>
+      <p style="font-size:13px;color:#888;margin-bottom:16px;">학번과 이름을 입력하면 바로 예약할 수 있습니다</p>
+      <span class="label">학번</span>
+      <input type="text" id="reg-id" placeholder="예: 20240001" style="margin-bottom:10px;" />
+      <span class="label">이름</span>
+      <input type="text" id="reg-name" placeholder="예: 김나영" style="margin-bottom:14px;" />
+      <button class="btn btn-primary" onclick="registerStudent()">등록하고 입장하기</button>
+      <div class="error" id="reg-err"></div>
+      <div class="loading" id="reg-loading"><span class="spinner"></span>등록 중...</div>
+    </div>
+    <button class="btn btn-secondary" onclick="showScr('scr-home')">← 돌아가기</button>
+  </div>
+</div>
+
+<!-- 학생 예약 -->
+<div id="scr-student" class="screen">
+  <div class="top-bar">
+    <h2 id="stu-greeting"></h2>
+    <button class="btn btn-secondary btn-sm" onclick="logout()">로그아웃</button>
+  </div>
+  <div class="card">
+    <span class="label">상담 방식 선택</span>
+    <div class="mode-row">
+      <button class="mode-btn rec" id="mode-face" onclick="selectMode('face')">
+        <span class="mt">👥 대면<span class="rec-badge">권장</span></span>
+        <span class="ms">본관 206호 방문</span>
+      </button>
+      <button class="mode-btn" id="mode-phone" onclick="selectMode('phone')">
+        <span class="mt">📞 전화</span>
+        <span class="ms">예약 시간에 연결</span>
+      </button>
+    </div>
+  </div>
+  <div class="card">
+    <span class="label">상담 가능한 시간 선택 <span style="color:#aaa;font-size:11px;">(1회 20분)</span></span>
+    <div class="loading" id="slots-loading" style="display:block;"><span class="spinner"></span>일정 불러오는 중...</div>
+    <div id="slot-grid" class="slot-grid"></div>
+  </div>
+  <div class="confirm-card" id="confirm-box">
+    <h3>✅ 예약 완료!</h3>
+    <div class="confirm-row">학생: <strong id="c-name"></strong></div>
+    <div class="confirm-row">일시: <strong id="c-time"></strong></div>
+    <div class="confirm-row">방식: <strong id="c-mode"></strong></div>
+    <div class="confirm-row">장소: <strong id="c-place"></strong></div>
+    <button class="btn-kakao" onclick="copyConfirm()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C6.477 3 2 6.477 2 10.8c0 2.7 1.7 5.1 4.3 6.6l-1.1 4.1 4.8-3.2c.6.1 1.3.1 2 .1 5.523 0 10-3.477 10-7.8S17.523 3 12 3z"/></svg>
+      카카오톡으로 공유
+    </button>
+    <button class="btn btn-danger" style="margin-top:8px;" onclick="cancelReservation()">예약 취소</button>
+  </div>
+</div>
+
+<!-- 교수 관리 -->
+<div id="scr-admin" class="screen">
+  <div class="top-bar">
+    <h2>교수 관리 화면</h2>
+    <button class="btn btn-secondary btn-sm" onclick="logout()">로그아웃</button>
+  </div>
+  <div class="tab-row">
+    <button class="tab active" onclick="switchTab('tab-sched',this)">📅 상담 일정</button>
+    <button class="tab" onclick="switchTab('tab-stus',this)">👥 학생 목록</button>
+  </div>
+
+  <!-- 상담 일정 탭 -->
+  <div id="tab-sched" class="tab-panel active">
+    <div class="stat-row">
+      <div class="stat-card"><div class="stat-num" id="s-total">-</div><div class="stat-label">전체 슬롯</div></div>
+      <div class="stat-card"><div class="stat-num" id="s-booked">-</div><div class="stat-label">예약 완료</div></div>
+      <div class="stat-card"><div class="stat-num" id="s-avail">-</div><div class="stat-label">잔여</div></div>
+    </div>
+
+    <!-- 슬롯 추가 -->
+    <div class="card">
+      <span class="label">날짜 선택</span>
+      <div class="date-select-grid" id="date-grid"></div>
+      <span class="label" style="margin-top:10px;">시작 시간</span>
+      <div class="time-grid" id="start-grid"></div>
+      <span class="label">종료 시간</span>
+      <div class="time-grid" id="end-grid"></div>
+      <button class="btn btn-primary" style="margin-top:4px;" onclick="addSlots()">슬롯 추가 (20분 단위 자동생성)</button>
+      <div class="loading" id="add-loading"><span class="spinner"></span>추가 중...</div>
+      <p style="font-size:11px;color:#aaa;margin-top:6px;">예: 10:00 ~ 12:00 선택 → 6개 슬롯 자동 생성</p>
+    </div>
+
+    <!-- 달력 -->
+    <div class="card">
+      <div class="cal-header">
+        <button class="cal-nav" onclick="changeMonth(-1)">‹</button>
+        <h3 id="cal-title"></h3>
+        <button class="cal-nav" onclick="changeMonth(1)">›</button>
+      </div>
+      <div class="loading" id="cal-loading" style="display:block;"><span class="spinner"></span>달력 불러오는 중...</div>
+      <div class="cal-grid" id="cal-grid"></div>
+    </div>
+
+    <!-- 날짜 상세 -->
+    <div class="detail-panel card" id="detail-panel">
+      <div class="detail-header">
+        <span class="detail-title" id="detail-title"></span>
+        <div class="detail-btns">
+          <button class="btn btn-secondary btn-sm" onclick="toggleAll()">전체 선택</button>
+          <button class="btn btn-danger btn-sm" id="bulk-btn" style="display:none;" onclick="bulkDelete()">선택 삭제</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteAllDay()">전체 삭제</button>
+        </div>
+      </div>
+      <div id="detail-list"></div>
+    </div>
+  </div>
+
+  <!-- 학생 목록 탭 -->
+  <div id="tab-stus" class="tab-panel">
+    <div class="card">
+      <span class="label">학생 직접 추가</span>
+      <div style="display:flex;gap:8px;margin-bottom:6px;">
+        <input type="text" id="a-id" placeholder="학번" style="flex:1;" />
+        <input type="text" id="a-name" placeholder="이름" style="flex:1;" />
+        <button class="btn btn-primary btn-sm" onclick="adminAddStu()">추가</button>
+      </div>
+      <div class="error" id="a-err"></div>
+    </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <span class="label" style="margin:0;">등록된 학생</span>
+        <strong id="stu-count" style="font-size:14px;"></strong>
+      </div>
+      <div class="loading" id="stu-loading"><span class="spinner"></span>불러오는 중...</div>
+      <div id="stu-list"></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- .app -->
 
 <script>
 const API = 'https://script.google.com/macros/s/AKfycbwcoKnjk6xX60KhFEJTnaVwiFof7-3CWgtXP5LUTliD3LI5v4-18IlRMSMzUsSGlnUquQ/exec';
@@ -282,79 +301,76 @@ const SLOT_MIN = 20;
 const ROOM = '본관 206호';
 const DAYS = ['일','월','화','수','목','금','토'];
 
-let students = [];
-let slots = [];
-let currentStudent = null;
-let myBooking = null;
-let selectedMode = 'face';
-let calYear = new Date().getFullYear();
-let calMonth = new Date().getMonth();
-let selectedDateKey = null;
+let students = [], slots = [];
+let currentStudent = null, myBooking = null;
+let selMode = 'face';
+let calYear = new Date().getFullYear(), calMonth = new Date().getMonth();
+let selDateKey = null;
+let selDate = null, selStart = null, selEnd = null;
 
+// ── API ──
 async function apiGet(action) {
-  const res = await fetch(`${API}?action=${action}`);
-  return res.json();
+  const r = await fetch(API + '?action=' + action);
+  return r.json();
 }
 async function apiPost(body) {
-  const res = await fetch(API, { method:'POST', body: JSON.stringify(body) });
-  return res.json();
+  const r = await fetch(API, { method:'POST', body: JSON.stringify(body) });
+  return r.json();
 }
 
-function showScreen(id) {
+// ── 화면 ──
+function showScr(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
-
 function logout() {
-  currentStudent = null; myBooking = null; selectedMode = 'face'; selectedDateKey = null;
+  currentStudent = null; myBooking = null; selMode = 'face'; selDateKey = null;
   document.getElementById('login-id').value = '';
   document.getElementById('home-preview').style.display = 'none';
-  document.getElementById('home-error').style.display = 'none';
+  document.getElementById('home-err').style.display = 'none';
   document.getElementById('confirm-box').style.display = 'none';
-  document.getElementById('detail-panel').classList.remove('open');
-  showScreen('screen-home');
+  showScr('scr-home');
 }
-
-function switchAdminTab(tabId, el) {
+function switchTab(id, el) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   el.classList.add('active');
-  document.getElementById(tabId).classList.add('active');
-  if (tabId === 'tab-students') loadAndRenderStudents();
+  document.getElementById(id).classList.add('active');
+  if (id === 'tab-stus') loadStus();
 }
 
+// ── 홈 ──
 function previewHome() {
-  const val = document.getElementById('login-id').value.trim();
-  const preview = document.getElementById('home-preview');
-  const err = document.getElementById('home-error');
-  err.style.display = 'none';
-  if (val === ADMIN_ID) {
-    preview.innerHTML = '🔐 교수 관리 화면으로 이동합니다';
-    preview.style.display = 'block';
+  const v = document.getElementById('login-id').value.trim();
+  const p = document.getElementById('home-preview');
+  document.getElementById('home-err').style.display = 'none';
+  if (v === ADMIN_ID) {
+    p.className = 'preview-box preview-admin';
+    p.textContent = '🔐 교수 관리 화면으로 이동합니다';
+    p.style.display = 'block';
   } else {
-    const found = students.find(s => s.id === val);
-    if (found) {
-      preview.innerHTML = `✅ <strong>${found.name}</strong> 학생으로 확인되었습니다`;
-      preview.style.display = 'block';
+    const f = students.find(s => s.id === v);
+    if (f) {
+      p.className = 'preview-box preview-ok';
+      p.innerHTML = '✅ <strong>' + f.name + '</strong> 학생으로 확인되었습니다';
+      p.style.display = 'block';
     } else {
-      preview.style.display = 'none';
+      p.style.display = 'none';
     }
   }
 }
 
 async function enterSystem() {
-  const val = document.getElementById('login-id').value.trim();
-  const err = document.getElementById('home-error');
+  const v = document.getElementById('login-id').value.trim();
+  const err = document.getElementById('home-err');
   const loading = document.getElementById('home-loading');
-  if (!val) return;
-  if (val === ADMIN_ID) {
-    showScreen('screen-admin');
+  if (!v) return;
+  if (v === ADMIN_ID) {
     err.style.display = 'none';
     loading.style.display = 'block';
-    showScreen('screen-admin');
+    showScr('scr-admin');
     await loadSlots();
-    updateStats();
-    renderCalendar();
+    updateStats(); renderCalendar();
     loading.style.display = 'none';
     return;
   }
@@ -363,20 +379,20 @@ async function enterSystem() {
     try { students = await apiGet('getStudents'); } catch(e) { students = []; }
   }
   loading.style.display = 'none';
-  const found = students.find(s => s.id === val);
-  if (!found) { err.textContent = '등록되지 않은 학번입니다.'; err.style.display = 'block'; return; }
+  const f = students.find(s => s.id === v);
+  if (!f) { err.textContent = '등록되지 않은 학번입니다.'; err.style.display = 'block'; return; }
   err.style.display = 'none';
-  currentStudent = found;
-  document.getElementById('student-greeting').textContent = `${found.name} 학생`;
-  showScreen('screen-student');
+  currentStudent = f;
+  document.getElementById('stu-greeting').textContent = f.name + ' 학생';
+  showScr('scr-student');
   selectMode('face');
-  await loadAndRenderStudentSlots();
+  await loadAndRenderSlots();
 }
 
 async function registerStudent() {
   const sid = document.getElementById('reg-id').value.trim();
   const sname = document.getElementById('reg-name').value.trim();
-  const err = document.getElementById('reg-error');
+  const err = document.getElementById('reg-err');
   const loading = document.getElementById('reg-loading');
   err.style.display = 'none';
   if (!sid || !sname) { err.textContent = '학번과 이름을 모두 입력해주세요.'; err.style.display = 'block'; return; }
@@ -388,71 +404,63 @@ async function registerStudent() {
     students.push({ id:sid, name:sname });
     currentStudent = { id:sid, name:sname };
     myBooking = null;
-    document.getElementById('student-greeting').textContent = `${sname} 학생`;
+    document.getElementById('stu-greeting').textContent = sname + ' 학생';
     loading.style.display = 'none';
-    showScreen('screen-student');
+    showScr('scr-student');
     selectMode('face');
-    await loadAndRenderStudentSlots();
-  } catch(e) {
-    err.textContent = '네트워크 오류가 발생했습니다.';
-    err.style.display = 'block'; loading.style.display = 'none';
-  }
+    await loadAndRenderSlots();
+  } catch(e) { err.textContent = '네트워크 오류가 발생했습니다.'; err.style.display = 'block'; loading.style.display = 'none'; }
 }
 
+// ── 슬롯 ──
 async function loadSlots() {
   try { slots = await apiGet('getSlots'); } catch(e) { slots = []; }
 }
-
-async function loadAndRenderStudentSlots() {
+async function loadAndRenderSlots() {
   document.getElementById('slots-loading').style.display = 'block';
   document.getElementById('slot-grid').innerHTML = '';
   document.getElementById('confirm-box').style.display = 'none';
   await loadSlots();
   myBooking = slots.find(s => s.bookedId === currentStudent.id) || null;
   document.getElementById('slots-loading').style.display = 'none';
-  renderStudentSlots();
-  if (myBooking) showConfirmBox(myBooking);
+  renderStuSlots();
+  if (myBooking) showConfirm(myBooking);
 }
 
 function fmt(dt) {
   const d = new Date(dt);
-  return `${d.getMonth()+1}월 ${d.getDate()}일 (${DAYS[d.getDay()]}) ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  return (d.getMonth()+1)+'월 '+d.getDate()+'일 ('+DAYS[d.getDay()]+') '+pad(d.getHours())+':'+pad(d.getMinutes());
 }
-function fmtTime(dt) {
-  const d = new Date(dt);
-  return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-}
-function addMin(dt, min) {
-  const d = new Date(dt); d.setMinutes(d.getMinutes()+min);
-  return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-}
-function dateKey(dt) { return dt.slice(0,10); }
+function fmtT(dt) { const d=new Date(dt); return pad(d.getHours())+':'+pad(d.getMinutes()); }
+function addM(dt,m) { const d=new Date(dt); d.setMinutes(d.getMinutes()+m); return pad(d.getHours())+':'+pad(d.getMinutes()); }
+function pad(n) { return String(n).padStart(2,'0'); }
+function dk(dt) { return dt.slice(0,10); }
 
-function selectMode(mode) {
-  selectedMode = mode;
-  document.getElementById('mode-face').classList.toggle('selected', mode==='face');
-  document.getElementById('mode-phone').classList.toggle('selected', mode==='phone');
+function selectMode(m) {
+  selMode = m;
+  document.getElementById('mode-face').classList.toggle('sel', m==='face');
+  document.getElementById('mode-phone').classList.toggle('sel', m==='phone');
 }
 
-function renderStudentSlots() {
+function renderStuSlots() {
   const grid = document.getElementById('slot-grid');
   grid.innerHTML = '';
   if (slots.length === 0) {
-    grid.innerHTML = '<p style="font-size:13px;color:#aaa;padding:1rem 0;">현재 예약 가능한 슬롯이 없습니다</p>';
+    grid.innerHTML = '<p style="font-size:13px;color:#aaa;padding:1rem 0;grid-column:span 2;">현재 예약 가능한 슬롯이 없습니다</p>';
     return;
   }
-  const mySlotDt = myBooking ? myBooking.datetime : null;
+  const myDt = myBooking ? myBooking.datetime : null;
   slots.sort((a,b)=>a.datetime.localeCompare(b.datetime)).forEach(s => {
     const div = document.createElement('div');
-    div.className = 'slot';
     const d = new Date(s.datetime);
-    div.innerHTML = `${d.getMonth()+1}/${d.getDate()}(${DAYS[d.getDay()]})<br>${fmtTime(s.datetime)}~${addMin(s.datetime,SLOT_MIN)}`;
-    if (s.datetime === mySlotDt) {
-      div.classList.add('mine');
-      div.innerHTML += `<br><span style="font-size:11px">${s.mode==='face'?'대면':'전화'} ✓</span>`;
+    div.innerHTML = (d.getMonth()+1)+'/'+d.getDate()+'('+DAYS[d.getDay()]+')<br>'+fmtT(s.datetime)+'~'+addM(s.datetime,SLOT_MIN);
+    if (s.datetime === myDt) {
+      div.className = 'slot mine';
+      div.innerHTML += '<br><span style="font-size:11px;">'+(s.mode==='face'?'대면':'전화')+' ✓</span>';
     } else if (s.bookedBy) {
-      div.classList.add('taken');
+      div.className = 'slot taken';
     } else {
+      div.className = 'slot avail';
       div.onclick = () => book(s.datetime);
     }
     grid.appendChild(div);
@@ -464,22 +472,21 @@ async function book(datetime) {
   const slot = slots.find(s=>s.datetime===datetime);
   if (!slot||slot.bookedBy) return;
   try {
-    const res = await apiPost({ action:'book', datetime, studentId:currentStudent.id, studentName:currentStudent.name, mode:selectedMode });
+    const res = await apiPost({ action:'book', datetime, studentId:currentStudent.id, studentName:currentStudent.name, mode:selMode });
     if (res.error) { alert(res.error); return; }
-    slot.bookedBy = currentStudent.name; slot.bookedId = currentStudent.id; slot.mode = selectedMode;
-    myBooking = slot;
-    renderStudentSlots(); showConfirmBox(slot);
+    slot.bookedBy=currentStudent.name; slot.bookedId=currentStudent.id; slot.mode=selMode;
+    myBooking=slot; renderStuSlots(); showConfirm(slot);
   } catch(e) { alert('예약 중 오류가 발생했습니다.'); }
 }
 
-function showConfirmBox(slot) {
+function showConfirm(slot) {
   const box = document.getElementById('confirm-box');
   box.style.display = 'block';
   document.getElementById('c-name').textContent = currentStudent.name;
-  document.getElementById('c-time').textContent = `${fmt(slot.datetime)} ~ ${addMin(slot.datetime,SLOT_MIN)}`;
+  document.getElementById('c-time').textContent = fmt(slot.datetime)+' ~ '+addM(slot.datetime,SLOT_MIN);
   const isFace = slot.mode==='face';
   document.getElementById('c-mode').textContent = isFace?'대면':'전화';
-  document.getElementById('c-place').textContent = isFace?`교수 연구실 (${ROOM})`:'예약 시간에 교수님 전화 연결';
+  document.getElementById('c-place').textContent = isFace?'교수 연구실 ('+ROOM+')':'예약 시간에 교수님 전화 연결';
   box.scrollIntoView({ behavior:'smooth' });
 }
 
@@ -487,218 +494,153 @@ async function cancelReservation() {
   if (!myBooking||!confirm('예약을 취소하시겠습니까?')) return;
   try {
     await apiPost({ action:'cancelBooking', datetime:myBooking.datetime });
-    const slot = slots.find(s=>s.datetime===myBooking.datetime);
-    if (slot) { slot.bookedBy=null; slot.bookedId=null; slot.mode=null; }
-    myBooking = null;
-    document.getElementById('confirm-box').style.display = 'none';
-    renderStudentSlots();
+    const s=slots.find(s=>s.datetime===myBooking.datetime);
+    if(s){s.bookedBy=null;s.bookedId=null;s.mode=null;}
+    myBooking=null;
+    document.getElementById('confirm-box').style.display='none';
+    renderStuSlots();
   } catch(e) { alert('취소 중 오류가 발생했습니다.'); }
 }
 
 function copyConfirm() {
-  const name=document.getElementById('c-name').textContent;
-  const time=document.getElementById('c-time').textContent;
-  const mode=document.getElementById('c-mode').textContent;
-  const place=document.getElementById('c-place').textContent;
-  const text=`[상담 예약 완료]\n담당교수: 이정 교수님\n학생: ${name}\n일시: ${time}\n방식: ${mode}\n장소/안내: ${place}`;
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(text).then(()=>alert('복사되었습니다! 카카오톡에 붙여넣기 하세요.'));
-  } else {
-    const ta=document.createElement('textarea'); ta.value=text;
-    document.body.appendChild(ta); ta.select(); document.execCommand('copy');
-    document.body.removeChild(ta); alert('복사되었습니다!');
+  const text='[상담 예약 완료]\n담당교수: 이정 교수님\n학생: '+document.getElementById('c-name').textContent+'\n일시: '+document.getElementById('c-time').textContent+'\n방식: '+document.getElementById('c-mode').textContent+'\n장소: '+document.getElementById('c-place').textContent;
+  if(navigator.clipboard){navigator.clipboard.writeText(text).then(()=>alert('복사되었습니다! 카카오톡에 붙여넣기 하세요.'));}
+  else{const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);alert('복사되었습니다!');}
+}
+
+// ── 슬롯 추가 (버튼 선택 방식) ──
+function buildDateGrid() {
+  const grid = document.getElementById('date-grid');
+  grid.innerHTML = '';
+  const today = new Date();
+  for (let i = 0; i < 21; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() + i);
+    const key = d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+    const label = (d.getMonth()+1)+'/'+d.getDate()+'('+DAYS[d.getDay()]+')';
+    const btn = document.createElement('button');
+    btn.className = 'sel-btn';
+    btn.textContent = label;
+    btn.dataset.val = key;
+    btn.onclick = () => {
+      document.querySelectorAll('#date-grid .sel-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      selDate = key;
+    };
+    grid.appendChild(btn);
   }
 }
 
-async function addSlots() {
-  const d=document.getElementById('new-date').value;
-  const start=document.getElementById('new-start').value;
-  const end=document.getElementById('new-end').value;
-  if (!d||!start||!end) { alert('날짜, 시작 시간, 종료 시간을 모두 입력해주세요.'); return; }
-  const [sh,sm]=start.split(':').map(Number);
-  const [eh,em]=end.split(':').map(Number);
-  let cur=sh*60+sm; const endMin=eh*60+em;
-  if (cur>=endMin) { alert('종료 시간이 시작 시간보다 늦어야 합니다.'); return; }
-  const toAdd=[];
-  while (cur+SLOT_MIN<=endMin) {
-    const hh=String(Math.floor(cur/60)).padStart(2,'0');
-    const mm=String(cur%60).padStart(2,'0');
-    const dt=`${d}T${hh}:${mm}`;
-    if (!slots.find(s=>s.datetime===dt)) toAdd.push(dt);
-    cur+=SLOT_MIN;
-  }
-  if (toAdd.length===0) { alert('해당 시간대에 이미 슬롯이 존재합니다.'); return; }
-  for (const dt of toAdd) {
-    await apiPost({ action:'addSlot', datetime:dt });
-    slots.push({ datetime:dt, bookedBy:null, bookedId:null, mode:null });
-  }
-  alert(`${toAdd.length}개의 슬롯이 추가되었습니다.`);
-  document.getElementById('new-date').value='';
-  document.getElementById('new-start').value='';
-  document.getElementById('new-end').value='';
-  updateStats(); renderCalendar();
-  if (selectedDateKey===d) selectDate(d, parseInt(d.split('-')[2]));
-}
-
-async function deleteSlot(datetime) {
-  if (!confirm('이 슬롯을 삭제하시겠습니까?')) return;
-  await apiPost({ action:'deleteSlot', datetime });
-  const idx=slots.findIndex(s=>s.datetime===datetime);
-  if (idx>-1) slots.splice(idx,1);
-  updateStats(); renderCalendar();
-  if (selectedDateKey) {
-    const daySlots=slots.filter(s=>dateKey(s.datetime)===selectedDateKey);
-    if (daySlots.length===0) { document.getElementById('detail-panel').classList.remove('open'); selectedDateKey=null; }
-    else selectDate(selectedDateKey, parseInt(selectedDateKey.split('-')[2]));
-  }
-}
-
-async function loadAndRenderStudents() {
-  document.getElementById('students-loading').style.display = 'block';
-  document.getElementById('student-list').innerHTML = '';
-  try { students = await apiGet('getStudents'); } catch(e) { students=[]; }
-  document.getElementById('students-loading').style.display = 'none';
-  renderStudentList();
-}
-
-function renderStudentList() {
-  document.getElementById('student-count').textContent = `${students.length}명`;
-  const list = document.getElementById('student-list');
-  list.innerHTML = '';
-  if (students.length===0) {
-    list.innerHTML='<p style="font-size:13px;color:#aaa;text-align:center;padding:1rem 0;">등록된 학생이 없습니다</p>';
-    return;
-  }
-  students.forEach((s,idx)=>{
-    const booking=slots.find(sl=>sl.bookedId===s.id);
-    const row=document.createElement('div'); row.className='list-row';
-    row.innerHTML=`
-      <div style="display:flex;align-items:center;gap:10px;flex:1;">
-        <div class="avatar">${s.name[0]}</div>
-        <div>
-          <div style="font-size:14px;font-weight:600;color:#1a1a1a;">${s.name}</div>
-          <div style="font-size:12px;color:#aaa;">${s.id}</div>
-        </div>
-      </div>
-      <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
-        ${booking&&booking.bookedBy?'<span class="badge taken">예약있음</span>':'<span class="badge available">예약없음</span>'}
-        <button class="ghost" style="font-size:12px;height:28px;padding:0 8px;" onclick="editStudent(${idx})">수정</button>
-        <button class="danger-sm" onclick="deleteStudent(${idx}, '${s.id}')">삭제</button>
-      </div>`;
-    list.appendChild(row);
+function buildTimeGrid(gridId, type) {
+  const grid = document.getElementById(gridId);
+  grid.innerHTML = '';
+  const times = ['09:00','09:20','09:40','10:00','10:20','10:40','11:00','11:20','11:40','12:00','13:00','13:20','13:40','14:00','14:20','14:40','15:00','15:20','15:40','16:00','16:20','16:40','17:00','17:20','17:40','18:00'];
+  times.forEach(t => {
+    const btn = document.createElement('button');
+    btn.className = 'sel-btn';
+    btn.textContent = t;
+    btn.dataset.val = t;
+    btn.onclick = () => {
+      document.querySelectorAll('#'+gridId+' .sel-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      if(type==='start') selStart=t; else selEnd=t;
+    };
+    grid.appendChild(btn);
   });
 }
 
-async function adminAddStudent() {
-  const sid=document.getElementById('admin-reg-id').value.trim();
-  const sname=document.getElementById('admin-reg-name').value.trim();
-  const err=document.getElementById('admin-reg-error');
-  err.style.display='none';
-  if (!sid||!sname) { err.textContent='학번과 이름을 모두 입력해주세요.'; err.style.display='block'; return; }
-  try {
-    const res=await apiPost({ action:'registerStudent', id:sid, name:sname });
-    if (res.error) { err.textContent=res.error; err.style.display='block'; return; }
-    students.push({ id:sid, name:sname });
-    document.getElementById('admin-reg-id').value='';
-    document.getElementById('admin-reg-name').value='';
-    renderStudentList();
-  } catch(e) { err.textContent='오류가 발생했습니다.'; err.style.display='block'; }
+async function addSlots() {
+  if (!selDate||!selStart||!selEnd) { alert('날짜, 시작, 종료 시간을 모두 선택해주세요.'); return; }
+  const [sh,sm]=selStart.split(':').map(Number);
+  const [eh,em]=selEnd.split(':').map(Number);
+  let cur=sh*60+sm; const endMin=eh*60+em;
+  if(cur>=endMin){alert('종료 시간이 시작 시간보다 늦어야 합니다.');return;}
+  const toAdd=[];
+  while(cur+SLOT_MIN<=endMin){
+    const dt=selDate+'T'+pad(Math.floor(cur/60))+':'+pad(cur%60);
+    if(!slots.find(s=>s.datetime===dt)) toAdd.push(dt);
+    cur+=SLOT_MIN;
+  }
+  if(toAdd.length===0){alert('해당 시간대에 이미 슬롯이 존재합니다.');return;}
+  document.getElementById('add-loading').style.display='block';
+  for(const dt of toAdd){
+    await apiPost({action:'addSlot',datetime:dt});
+    slots.push({datetime:dt,bookedBy:null,bookedId:null,mode:null});
+  }
+  document.getElementById('add-loading').style.display='none';
+  alert(toAdd.length+'개의 슬롯이 추가되었습니다.');
+  updateStats(); renderCalendar();
+  if(selDateKey===selDate) selectDate(selDate,parseInt(selDate.split('-')[2]));
 }
 
-async function editStudent(idx) {
-  const s=students[idx];
-  const newName=prompt(`이름 수정 (현재: ${s.name})`, s.name);
-  if (newName===null) return;
-  const newId=prompt(`학번 수정 (현재: ${s.id})`, s.id);
-  if (newId===null) return;
-  if (!newName.trim()||!newId.trim()) { alert('이름과 학번을 입력해주세요.'); return; }
-  await apiPost({ action:'updateStudent', oldId:s.id, newId:newId.trim(), newName:newName.trim() });
-  students[idx]={ id:newId.trim(), name:newName.trim() };
-  renderStudentList();
-}
-
-async function deleteStudent(idx, sid) {
-  const s=students[idx];
-  if (!confirm(`${s.name} (${s.id}) 학생을 삭제하시겠습니까?`)) return;
-  await apiPost({ action:'deleteStudent', id:sid });
-  slots.forEach(sl=>{ if(sl.bookedId===sid){sl.bookedBy=null;sl.bookedId=null;sl.mode=null;} });
-  students.splice(idx,1);
-  renderStudentList(); updateStats();
-}
-
+// ── 교수: 달력 ──
 function updateStats() {
   const booked=slots.filter(s=>s.bookedBy).length;
-  document.getElementById('stat-total').textContent=slots.length;
-  document.getElementById('stat-booked').textContent=booked;
-  document.getElementById('stat-avail').textContent=slots.length-booked;
+  document.getElementById('s-total').textContent=slots.length;
+  document.getElementById('s-booked').textContent=booked;
+  document.getElementById('s-avail').textContent=slots.length-booked;
 }
 
-function changeMonth(delta) {
-  calMonth+=delta;
+function changeMonth(d) {
+  calMonth+=d;
   if(calMonth>11){calMonth=0;calYear++;}
   if(calMonth<0){calMonth=11;calYear--;}
-  selectedDateKey=null;
+  selDateKey=null;
   document.getElementById('detail-panel').classList.remove('open');
   renderCalendar();
 }
 
 function renderCalendar() {
-  document.getElementById('cal-title').textContent=`${calYear}년 ${calMonth+1}월`;
+  document.getElementById('cal-loading').style.display='none';
+  document.getElementById('cal-title').textContent=calYear+'년 '+(calMonth+1)+'월';
   const grid=document.getElementById('cal-grid'); grid.innerHTML='';
   DAYS.forEach(d=>{const el=document.createElement('div');el.className='cal-dow';el.textContent=d;grid.appendChild(el);});
   const byDate={};
-  slots.forEach(s=>{const k=dateKey(s.datetime);if(!byDate[k])byDate[k]={total:0,booked:0};byDate[k].total++;if(s.bookedBy)byDate[k].booked++;});
+  slots.forEach(s=>{const k=dk(s.datetime);if(!byDate[k])byDate[k]={t:0,b:0};byDate[k].t++;if(s.bookedBy)byDate[k].b++;});
   const today=new Date();
-  const firstDay=new Date(calYear,calMonth,1).getDay();
-  const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
-  const prevDays=new Date(calYear,calMonth,0).getDate();
-  for(let i=0;i<firstDay;i++){const c=document.createElement('div');c.className='cal-cell other-month';c.innerHTML=`<div class="day-num" style="color:#ccc">${prevDays-firstDay+1+i}</div>`;grid.appendChild(c);}
-  for(let d=1;d<=daysInMonth;d++){
-    const k=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+  const first=new Date(calYear,calMonth,1).getDay();
+  const dim=new Date(calYear,calMonth+1,0).getDate();
+  const prev=new Date(calYear,calMonth,0).getDate();
+  for(let i=0;i<first;i++){const c=document.createElement('div');c.className='cal-cell other';c.innerHTML='<div class="dn" style="color:#ddd">'+(prev-first+1+i)+'</div>';grid.appendChild(c);}
+  for(let d=1;d<=dim;d++){
+    const k=calYear+'-'+pad(calMonth+1)+'-'+pad(d);
     const info=byDate[k];
     const isToday=today.getFullYear()===calYear&&today.getMonth()===calMonth&&today.getDate()===d;
     const c=document.createElement('div');
-    c.className='cal-cell'+(info?' has-slots':'')+(isToday?' today':'')+(selectedDateKey===k?' selected':'');
-    let inner=`<div class="day-num">${d}</div>`;
-    if(info){const free=info.total-info.booked;if(free>0)inner+=`<div class="day-pip free">${free}개 가능</div>`;if(info.booked>0)inner+=`<div class="day-pip full">${info.booked}명 예약</div>`;}
+    c.className='cal-cell'+(info?' has':'')+(isToday?' today':'')+(selDateKey===k?' sel':'');
+    let inner='<div class="dn">'+d+'</div>';
+    if(info){const f=info.t-info.b;if(f>0)inner+='<div class="pip free">'+f+'개 가능</div>';if(info.b>0)inner+='<div class="pip booked">'+info.b+'명 예약</div>';}
     c.innerHTML=inner;
     if(info)c.onclick=()=>selectDate(k,d);
     grid.appendChild(c);
   }
-  const total=firstDay+daysInMonth;const rem=total%7===0?0:7-(total%7);
-  for(let i=1;i<=rem;i++){const c=document.createElement('div');c.className='cal-cell other-month';c.innerHTML=`<div class="day-num" style="color:#ccc">${i}</div>`;grid.appendChild(c);}
+  const total=first+dim; const rem=total%7===0?0:7-(total%7);
+  for(let i=1;i<=rem;i++){const c=document.createElement('div');c.className='cal-cell other';c.innerHTML='<div class="dn" style="color:#ddd">'+i+'</div>';grid.appendChild(c);}
 }
 
 function selectDate(k,d) {
-  selectedDateKey=k; renderCalendar();
-  const daySlots=slots.filter(s=>dateKey(s.datetime)===k).sort((a,b)=>a.datetime.localeCompare(b.datetime));
-  document.getElementById('detail-title').textContent=`${calMonth+1}월 ${d}일 상담 일정`;
-  document.getElementById('bulk-delete-btn').style.display='none';
+  selDateKey=k; renderCalendar();
+  const daySlots=slots.filter(s=>dk(s.datetime)===k).sort((a,b)=>a.datetime.localeCompare(b.datetime));
+  document.getElementById('detail-title').textContent=(calMonth+1)+'월 '+d+'일 상담 일정';
+  document.getElementById('bulk-btn').style.display='none';
   const list=document.getElementById('detail-list'); list.innerHTML='';
   daySlots.forEach(s=>{
-    const row=document.createElement('div');row.className='list-row';
-    row.style.cursor='pointer';
-    const time=`${fmtTime(s.datetime)} ~ ${addMin(s.datetime,SLOT_MIN)}`;
+    const row=document.createElement('div'); row.className='slot-row';
+    const time=fmtT(s.datetime)+' ~ '+addM(s.datetime,SLOT_MIN);
+    const cbId='cb_'+s.datetime.replace(/[^0-9]/g,'');
     const modeBadge=s.mode==='face'?'<span class="badge face">대면</span>':s.mode==='phone'?'<span class="badge phone">전화</span>':'';
-    const cbId=`cb_${s.datetime.replace(/[^0-9]/g,'')}`;
     row.innerHTML=`
       <div style="display:flex;align-items:center;gap:10px;flex:1;">
-        <input type="checkbox" id="${cbId}" data-datetime="${s.datetime}"
-          style="width:18px;height:18px;cursor:pointer;accent-color:#e53935;"
-          onclick="updateBulkBtn()" />
-        <span style="font-size:14px;color:#1a1a1a;font-weight:600;">${time}</span>
+        <input type="checkbox" id="${cbId}" data-dt="${s.datetime}"
+          style="width:20px;height:20px;cursor:pointer;accent-color:#e53935;" onclick="updateBulkBtn()" />
+        <span style="font-size:14px;font-weight:600;">${time}</span>
       </div>
       <div style="display:flex;align-items:center;gap:6px;">
-        <span style="font-size:13px;color:#666;">${s.bookedBy?s.bookedBy+' ('+s.bookedId+')':''}</span>
+        <span style="font-size:12px;color:#888;">${s.bookedBy?s.bookedBy:''}</span>
         ${modeBadge}
-        <span class="badge ${s.bookedBy?'taken':'available'}">${s.bookedBy?'예약 완료':'예약 가능'}</span>
+        <span class="badge ${s.bookedBy?'taken':'avail'}">${s.bookedBy?'예약완료':'가능'}</span>
       </div>`;
-    row.onclick = (e) => {
-      if (e.target.type === 'checkbox') return;
-      const cb = document.getElementById(cbId);
-      cb.checked = !cb.checked;
-      updateBulkBtn();
-    };
+    row.onclick=e=>{if(e.target.type==='checkbox')return;const cb=document.getElementById(cbId);cb.checked=!cb.checked;updateBulkBtn();};
     list.appendChild(row);
   });
   document.getElementById('detail-panel').classList.add('open');
@@ -706,55 +648,114 @@ function selectDate(k,d) {
 }
 
 function updateBulkBtn() {
-  const checked = document.querySelectorAll('#detail-list input[type="checkbox"]:checked');
-  const btn = document.getElementById('bulk-delete-btn');
-  btn.style.display = checked.length > 0 ? 'block' : 'none';
-  btn.textContent = `선택 삭제 (${checked.length}개)`;
+  const checked=document.querySelectorAll('#detail-list input:checked');
+  const btn=document.getElementById('bulk-btn');
+  btn.style.display=checked.length>0?'inline-block':'none';
+  btn.textContent='선택 삭제 ('+checked.length+'개)';
 }
-
-function toggleSelectAll() {
-  const all = document.querySelectorAll('#detail-list input[type="checkbox"]');
-  const allChecked = [...all].every(cb => cb.checked);
-  all.forEach(cb => cb.checked = !allChecked);
-  updateBulkBtn();
+function toggleAll() {
+  const all=document.querySelectorAll('#detail-list input[type="checkbox"]');
+  const allChecked=[...all].every(c=>c.checked);
+  all.forEach(c=>c.checked=!allChecked); updateBulkBtn();
 }
-
-async function bulkDeleteSlots() {
-  const checked = [...document.querySelectorAll('#detail-list input[type="checkbox"]:checked')];
-  if (checked.length === 0) return;
-  if (!confirm(`선택한 ${checked.length}개 슬롯을 삭제하시겠습니까?`)) return;
-  for (const cb of checked) {
-    const dt = cb.dataset.datetime;
-    await apiPost({ action:'deleteSlot', datetime:dt });
-    const idx = slots.findIndex(s=>s.datetime===dt);
-    if (idx>-1) slots.splice(idx,1);
+async function bulkDelete() {
+  const checked=[...document.querySelectorAll('#detail-list input:checked')];
+  if(!checked.length) return;
+  if(!confirm('선택한 '+checked.length+'개 슬롯을 삭제하시겠습니까?')) return;
+  for(const cb of checked){
+    const dt=cb.dataset.dt;
+    await apiPost({action:'deleteSlot',datetime:dt});
+    const idx=slots.findIndex(s=>s.datetime===dt);
+    if(idx>-1) slots.splice(idx,1);
   }
   updateStats(); renderCalendar();
-  if (selectedDateKey) {
-    const daySlots=slots.filter(s=>dateKey(s.datetime)===selectedDateKey);
-    if (daySlots.length===0) { document.getElementById('detail-panel').classList.remove('open'); selectedDateKey=null; }
-    else selectDate(selectedDateKey, parseInt(selectedDateKey.split('-')[2]));
-  }
+  const daySlots=slots.filter(s=>dk(s.datetime)===selDateKey);
+  if(daySlots.length===0){document.getElementById('detail-panel').classList.remove('open');selDateKey=null;}
+  else selectDate(selDateKey,parseInt(selDateKey.split('-')[2]));
 }
-
-async function deleteAllDaySlots() {
-  if (!selectedDateKey) return;
-  const daySlots=slots.filter(s=>dateKey(s.datetime)===selectedDateKey);
-  if (daySlots.length===0) return;
-  if (!confirm(`${calMonth+1}월 ${parseInt(selectedDateKey.split('-')[2])}일 슬롯 ${daySlots.length}개를 모두 삭제하시겠습니까?`)) return;
-  for (const s of daySlots) {
-    await apiPost({ action:'deleteSlot', datetime:s.datetime });
+async function deleteAllDay() {
+  if(!selDateKey) return;
+  const daySlots=slots.filter(s=>dk(s.datetime)===selDateKey);
+  if(!daySlots.length) return;
+  if(!confirm((calMonth+1)+'월 '+parseInt(selDateKey.split('-')[2])+'일 슬롯 '+daySlots.length+'개를 모두 삭제하시겠습니까?')) return;
+  for(const s of daySlots){
+    await apiPost({action:'deleteSlot',datetime:s.datetime});
     const idx=slots.findIndex(sl=>sl.datetime===s.datetime);
-    if (idx>-1) slots.splice(idx,1);
+    if(idx>-1) slots.splice(idx,1);
   }
   document.getElementById('detail-panel').classList.remove('open');
-  selectedDateKey=null;
-  updateStats(); renderCalendar();
+  selDateKey=null; updateStats(); renderCalendar();
 }
 
-// 초기 로드
-apiGet('getStudents').then(data=>{ students=data||[]; }).catch(()=>{});
-apiGet('getSlots').then(data=>{ slots=data||[]; updateStats(); renderCalendar(); }).catch(()=>{ renderCalendar(); });
+// ── 학생 목록 ──
+async function loadStus() {
+  document.getElementById('stu-loading').style.display='block';
+  document.getElementById('stu-list').innerHTML='';
+  try{students=await apiGet('getStudents');}catch(e){students=[];}
+  document.getElementById('stu-loading').style.display='none';
+  renderStuList();
+}
+function renderStuList() {
+  document.getElementById('stu-count').textContent=students.length+'명';
+  const list=document.getElementById('stu-list'); list.innerHTML='';
+  if(!students.length){list.innerHTML='<p style="font-size:13px;color:#aaa;text-align:center;padding:1rem;">등록된 학생이 없습니다</p>';return;}
+  students.forEach((s,i)=>{
+    const bk=slots.find(sl=>sl.bookedId===s.id);
+    const row=document.createElement('div'); row.className='stu-row';
+    row.innerHTML=`
+      <div style="display:flex;align-items:center;gap:10px;flex:1;">
+        <div class="avatar">${s.name[0]}</div>
+        <div>
+          <div style="font-size:14px;font-weight:600;">${s.name}</div>
+          <div style="font-size:12px;color:#aaa;">${s.id}</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <span class="badge ${bk&&bk.bookedBy?'taken':'avail'}">${bk&&bk.bookedBy?'예약있음':'예약없음'}</span>
+        <button class="btn btn-secondary btn-sm" style="font-size:11px;height:28px;line-height:28px;" onclick="editStu(${i})">수정</button>
+        <button class="btn btn-danger btn-sm" style="height:28px;line-height:28px;" onclick="deleteStu(${i},'${s.id}')">삭제</button>
+      </div>`;
+    list.appendChild(row);
+  });
+}
+async function adminAddStu() {
+  const sid=document.getElementById('a-id').value.trim();
+  const sname=document.getElementById('a-name').value.trim();
+  const err=document.getElementById('a-err'); err.style.display='none';
+  if(!sid||!sname){err.textContent='학번과 이름을 모두 입력해주세요.';err.style.display='block';return;}
+  try{
+    const res=await apiPost({action:'registerStudent',id:sid,name:sname});
+    if(res.error){err.textContent=res.error;err.style.display='block';return;}
+    students.push({id:sid,name:sname});
+    document.getElementById('a-id').value=''; document.getElementById('a-name').value='';
+    renderStuList();
+  }catch(e){err.textContent='오류가 발생했습니다.';err.style.display='block';}
+}
+async function editStu(i) {
+  const s=students[i];
+  const n=prompt('이름 수정 (현재: '+s.name+')',s.name); if(n===null)return;
+  const id=prompt('학번 수정 (현재: '+s.id+')',s.id); if(id===null)return;
+  if(!n.trim()||!id.trim()){alert('이름과 학번을 입력해주세요.');return;}
+  await apiPost({action:'updateStudent',oldId:s.id,newId:id.trim(),newName:n.trim()});
+  students[i]={id:id.trim(),name:n.trim()}; renderStuList();
+}
+async function deleteStu(i,sid) {
+  if(!confirm(students[i].name+' 학생을 삭제하시겠습니까?')) return;
+  await apiPost({action:'deleteStudent',id:sid});
+  slots.forEach(sl=>{if(sl.bookedId===sid){sl.bookedBy=null;sl.bookedId=null;sl.mode=null;}});
+  students.splice(i,1); renderStuList(); updateStats();
+}
+
+// ── 초기화 ──
+buildDateGrid();
+buildTimeGrid('start-grid','start');
+buildTimeGrid('end-grid','end');
+renderCalendar();
+// 학생+슬롯 미리 로드 (홈에서 바로 학번 확인 + 교수 진입시 달력 즉시 표시)
+Promise.all([
+  apiGet('getStudents').then(d=>{students=d||[];}),
+  apiGet('getSlots').then(d=>{slots=d||[];updateStats();renderCalendar();})
+]).catch(()=>{});
 </script>
 </body>
 </html>
