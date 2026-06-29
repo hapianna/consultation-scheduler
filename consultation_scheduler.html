@@ -310,11 +310,12 @@ let selDate = null, selStart = null, selEnd = null;
 
 // ── API ──
 async function apiGet(action) {
-  const r = await fetch(API + '?action=' + action);
+  const r = await fetch(API + '?action=' + action, { redirect: 'follow' });
   return r.json();
 }
 async function apiPost(body) {
-  const r = await fetch(API, { method:'POST', body: JSON.stringify(body) });
+  const params = encodeURIComponent(JSON.stringify(body));
+  const r = await fetch(API + '?method=POST&body=' + params, { redirect: 'follow' });
   return r.json();
 }
 
