@@ -234,7 +234,14 @@ button.kakao { height: 40px; padding: 0 16px; border-radius: 8px; border: none; 
         <div class="cal-grid" id="cal-grid"></div>
       </div>
       <div class="detail-panel card" id="detail-panel">
-        <p class="section-label" id="detail-title" style="margin-bottom:12px;"></p>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <p class="section-label" id="detail-title" style="margin-bottom:0;"></p>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <button class="ghost" style="font-size:12px;height:28px;padding:0 10px;" onclick="toggleSelectAll()">전체 선택</button>
+            <button class="danger-sm" id="bulk-delete-btn" style="display:none;" onclick="bulkDeleteSlots()">선택 삭제</button>
+            <button class="danger-sm" style="border-color:#ffb3b3;" onclick="deleteAllDaySlots()">이 날 전체 삭제</button>
+          </div>
+        </div>
         <div id="detail-list"></div>
       </div>
     </div>
@@ -650,23 +657,83 @@ function selectDate(k,d) {
   selectedDateKey=k; renderCalendar();
   const daySlots=slots.filter(s=>dateKey(s.datetime)===k).sort((a,b)=>a.datetime.localeCompare(b.datetime));
   document.getElementById('detail-title').textContent=`${calMonth+1}월 ${d}일 상담 일정`;
+  document.getElementById('bulk-delete-btn').style.display='none';
   const list=document.getElementById('detail-list'); list.innerHTML='';
   daySlots.forEach(s=>{
     const row=document.createElement('div');row.className='list-row';
+    row.style.cursor='pointer';
     const time=`${fmtTime(s.datetime)} ~ ${addMin(s.datetime,SLOT_MIN)}`;
     const modeBadge=s.mode==='face'?'<span class="badge face">대면</span>':s.mode==='phone'?'<span class="badge phone">전화</span>':'';
+    const cbId=`cb_${s.datetime.replace(/[^0-9]/g,'')}`;
     row.innerHTML=`
-      <span style="font-size:14px;color:#1a1a1a;font-weight:600;">${time}</span>
+      <div style="display:flex;align-items:center;gap:10px;flex:1;">
+        <input type="checkbox" id="${cbId}" data-datetime="${s.datetime}"
+          style="width:18px;height:18px;cursor:pointer;accent-color:#e53935;"
+          onclick="updateBulkBtn()" />
+        <span style="font-size:14px;color:#1a1a1a;font-weight:600;">${time}</span>
+      </div>
       <div style="display:flex;align-items:center;gap:6px;">
         <span style="font-size:13px;color:#666;">${s.bookedBy?s.bookedBy+' ('+s.bookedId+')':''}</span>
         ${modeBadge}
         <span class="badge ${s.bookedBy?'taken':'available'}">${s.bookedBy?'예약 완료':'예약 가능'}</span>
-        <button class="danger-sm" onclick="deleteSlot('${s.datetime}')">삭제</button>
       </div>`;
+    row.onclick = (e) => {
+      if (e.target.type === 'checkbox') return;
+      const cb = document.getElementById(cbId);
+      cb.checked = !cb.checked;
+      updateBulkBtn();
+    };
     list.appendChild(row);
   });
   document.getElementById('detail-panel').classList.add('open');
   document.getElementById('detail-panel').scrollIntoView({behavior:'smooth'});
+}
+
+function updateBulkBtn() {
+  const checked = document.querySelectorAll('#detail-list input[type="checkbox"]:checked');
+  const btn = document.getElementById('bulk-delete-btn');
+  btn.style.display = checked.length > 0 ? 'block' : 'none';
+  btn.textContent = `선택 삭제 (${checked.length}개)`;
+}
+
+function toggleSelectAll() {
+  const all = document.querySelectorAll('#detail-list input[type="checkbox"]');
+  const allChecked = [...all].every(cb => cb.checked);
+  all.forEach(cb => cb.checked = !allChecked);
+  updateBulkBtn();
+}
+
+async function bulkDeleteSlots() {
+  const checked = [...document.querySelectorAll('#detail-list input[type="checkbox"]:checked')];
+  if (checked.length === 0) return;
+  if (!confirm(`선택한 ${checked.length}개 슬롯을 삭제하시겠습니까?`)) return;
+  for (const cb of checked) {
+    const dt = cb.dataset.datetime;
+    await apiPost({ action:'deleteSlot', datetime:dt });
+    const idx = slots.findIndex(s=>s.datetime===dt);
+    if (idx>-1) slots.splice(idx,1);
+  }
+  updateStats(); renderCalendar();
+  if (selectedDateKey) {
+    const daySlots=slots.filter(s=>dateKey(s.datetime)===selectedDateKey);
+    if (daySlots.length===0) { document.getElementById('detail-panel').classList.remove('open'); selectedDateKey=null; }
+    else selectDate(selectedDateKey, parseInt(selectedDateKey.split('-')[2]));
+  }
+}
+
+async function deleteAllDaySlots() {
+  if (!selectedDateKey) return;
+  const daySlots=slots.filter(s=>dateKey(s.datetime)===selectedDateKey);
+  if (daySlots.length===0) return;
+  if (!confirm(`${calMonth+1}월 ${parseInt(selectedDateKey.split('-')[2])}일 슬롯 ${daySlots.length}개를 모두 삭제하시겠습니까?`)) return;
+  for (const s of daySlots) {
+    await apiPost({ action:'deleteSlot', datetime:s.datetime });
+    const idx=slots.findIndex(sl=>sl.datetime===s.datetime);
+    if (idx>-1) slots.splice(idx,1);
+  }
+  document.getElementById('detail-panel').classList.remove('open');
+  selectedDateKey=null;
+  updateStats(); renderCalendar();
 }
 
 // 초기 로드
