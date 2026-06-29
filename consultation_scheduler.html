@@ -349,7 +349,14 @@ async function enterSystem() {
   if (!val) return;
   if (val === ADMIN_ID) {
     showScreen('screen-admin');
-    await loadSlots(); updateStats(); renderCalendar(); return;
+    err.style.display = 'none';
+    loading.style.display = 'block';
+    showScreen('screen-admin');
+    await loadSlots();
+    updateStats();
+    renderCalendar();
+    loading.style.display = 'none';
+    return;
   }
   loading.style.display = 'block';
   if (students.length === 0) {
@@ -747,7 +754,7 @@ async function deleteAllDaySlots() {
 
 // 초기 로드
 apiGet('getStudents').then(data=>{ students=data||[]; }).catch(()=>{});
-renderCalendar();
+apiGet('getSlots').then(data=>{ slots=data||[]; updateStats(); renderCalendar(); }).catch(()=>{ renderCalendar(); });
 </script>
 </body>
 </html>
